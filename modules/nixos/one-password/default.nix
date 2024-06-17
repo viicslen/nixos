@@ -54,23 +54,19 @@ in {
           GSM_SKIP_SSH_AGENT_WORKAROUND = "1";
         };
 
-        xdg = {
-          enable = mkDefault true;
-
-          # Disable gnome-keyring ssh-agent
-          configFile."autostart/gnome-keyring-ssh.desktop".text = ''
-            ${lib.fileContents "${pkgs.gnome.gnome-keyring}/etc/xdg/autostart/gnome-keyring-ssh.desktop"}
-            Hidden=true
-          '';
-
-          # Configure the 1Password autostart desktop file
-          configFile."autostart/1password.desktop".text = mkIf cfg.autostart (
-            replaceStrings
-            ["Exec=1password %U"]
-            ["Exec=${pkgs._1password-gui}/bin/1password --silent %U"]
-            (lib.fileContents "${pkgs._1password-gui}/share/applications/${pkgs._1password-gui.pname}.desktop")
-          );
+        # Configure the 1Password autostart desktop file
+        home.file = mkIf cfg.autostart {
+          "1password.desktop" = {
+            source = ./1password.desktop;
+            target = ".config/autostart/1password.desktop";
+          };
         };
+
+        # Disable gnome-keyring ssh-agent
+        xdg.configFile."autostart/gnome-keyring-ssh.desktop".text = ''
+          ${lib.fileContents "${pkgs.gnome.gnome-keyring}/etc/xdg/autostart/gnome-keyring-ssh.desktop"}
+          Hidden=true
+        '';
 
         # Configure the SSH client to use the 1Password socket
         programs.ssh = {

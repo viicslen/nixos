@@ -2,68 +2,22 @@
   description = "Nixos config flake";
 
   inputs = {
-    # Nixpkgs
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    # Hardware
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-
-    # Home manager
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # Community packages
     nur.url = github:nix-community/NUR;
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
-    # Hyprland
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
-    hyprland-contrib = {
-      url = "github:hyprwm/contrib";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-      inputs.hyprland.follows = "hyprland";
-    };
-    hypridle = {
-      url = "github:hyprwm/hypridle";
-      inputs.hyprlang.follows = "hyprland/hyprlang";
-      inputs.nixpkgs.follows = "hyprland/nixpkgs";
-      inputs.systems.follows = "hyprland/systems";
-    };
-    hyprpaper = {
-      url = "github:hyprwm/hyprpaper";
-      inputs.hyprlang.follows = "hyprland/hyprlang";
-      inputs.nixpkgs.follows = "hyprland/nixpkgs";
-      inputs.systems.follows = "hyprland/systems";
-    };
-    split-monitor-workspaces = {
-      url = "github:Duckonaut/split-monitor-workspaces";
-      inputs.hyprland.follows = "hyprland";
-    };
 
-    # Theming
-    stylix.url = "github:danth/stylix";
-    base16.url = "github:SenchoPens/base16.nix";
-    tt-schemes = {
-      url = "github:tinted-theming/schemes";
-      flake = false;
-    };
-    rofi-themes = {
-      url = "github:newmanls/rofi-themes-collection";
-      flake = false;
-    };
-    rofi-collections = {
-      url = "github:Murzchnvok/rofi-collection";
-      flake = false;
-    };
+    hyprland.url = "github:hyprwm/Hyprland";
+
+    stylix.url = "github:danth/stylix/release-23.11";
 
     nix-alien.url = "github:thiagokokada/nix-alien";
+
     lan-mouse.url = "github:feschber/lan-mouse";
   };
 
@@ -117,22 +71,15 @@
 
     # Your nixos configurations
     nixosConfigurations = {
+      nixos = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs outputs user;};
+        modules = [./hosts/nixos];
+      };
+
       asus-zephyrus-gu603 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {inherit inputs outputs user;};
         modules = [./hosts/asus-zephyrus-gu603];
-      };
-
-      acer-aspire-tc780 = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {inherit inputs outputs user;};
-        modules = [./hosts/acer-aspire-tc780];
-      };
-      
-      neoscode-server = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {inherit inputs outputs user;};
-        modules = [./hosts/neoscode-server];
       };
     };
   };

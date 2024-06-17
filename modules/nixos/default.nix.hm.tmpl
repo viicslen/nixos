@@ -6,12 +6,11 @@
   ...
 }:
 with lib; let
-  feature = "firefox";
-  cfg = config.features.${feature};
+  cfg = config.features.stylix;
   homeManagerLoaded = builtins.hasAttr "home-manager" options;
 in {
-  options.features.${feature} = {
-    enable = mkEnableOption (mdDoc feature);
+  options.features.stylix = {
+    enable = mkEnableOption (mdDoc "stylix");
   };
 
   config = mkIf cfg.enable (mkMerge [

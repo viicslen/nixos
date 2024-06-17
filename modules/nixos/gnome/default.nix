@@ -17,23 +17,13 @@ in {
       default = "nixos";
       description = "The user update the settings for";
     };
-
-    enableGdm = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Whether to enable the GDM window manager";
-    };
   };
 
   config = mkIf cfg.enable (mkMerge [
     {
       # Enable the GNOME Desktop Environment.
-      services.xserver.enable = lib.mkDefault true;
+      services.xserver.displayManager.gdm.enable = true;
       services.xserver.desktopManager.gnome.enable = true;
-
-      services.xserver.displayManager.gdm = mkIf cfg.enableGdm {
-        enable = true;
-      };
 
       # Enable GNOME Keyring
       services.gnome.gnome-keyring.enable = true;
@@ -71,6 +61,8 @@ in {
         gnomeExtensions.arcmenu
         gnomeExtensions.user-themes
         gnomeExtensions.autohide-battery
+        gnomeExtensions.kube-config
+        gnomeExtensions.mullvad-indicator
         gnomeExtensions.supergfxctl-gex
         gnomeExtensions.solaar-extension
         gnomeExtensions.caffeine
@@ -78,27 +70,10 @@ in {
         gnomeExtensions.forge
         gnomeExtensions.arrange-windows
         gnomeExtensions.rounded-corners
-        gnomeExtensions.tophat
-        gnomeExtensions.simple-break-reminder
-
-        # TopHat Dependencies
-        gtop
-        libgtop
-        clutter
-        clutter-gtk
       ];
-
-      # Required for some GNOME extensions
-      environment.variables = {
-        GI_TYPELIB_PATH = "/run/current-system/sw/lib/girepository-1.0";
-      };
     }
     (mkIf homeManagerLoaded {
       home-manager.users.${cfg.user} = {
-        gtk.enable = true;
-        gtk.iconTheme.name = "Adwaita";
-        gtk.iconTheme.package = pkgs.gnome.adwaita-icon-theme;
-
         dconf.settings = {
           "org/gnome/mutter".experimental-features = ["scale-monitor-framebuffer"];
           "org/gnome/desktop/wm/preferences".button-layout = ":minimize,maximize,close";

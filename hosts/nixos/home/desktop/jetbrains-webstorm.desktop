@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=WebStorm
+Type=Application
+Categories=Development;IDE;
+Exec=~/.local/share/JetBrains/Toolbox/scripts/webstorm %U
+Icon=~/.local/share/JetBrains/Toolbox/apps/webstorm/bin/webstorm.svg
+StartupWMClass=jetbrains-webstorm
+Comment=The Lightning-Smart Web IDE
+StartupNotify=true
+Terminal=false

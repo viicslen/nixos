@@ -3,12 +3,10 @@
 {
   # List your module files here
   # my-module = import ./my-module.nix;
-  kde = import ./kde;
   gnome = import ./gnome;
   sound = import ./sound;
+  stylix = import ./stylix;
   docker = import ./docker;
-  podman = import ./podman;
-  theming = import ./theming;
   network = import ./network;
   mullvad = import ./mullvad;
   hyprland = import ./hyprland;

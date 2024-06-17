@@ -16,6 +16,8 @@
       ./packages.nix
     ]
     ++ lib.attrsets.mapAttrsToList (name: value: value) outputs.nixosModules;
+  
+  system.stateVersion = "24.05";
 
   nix = {
     # This will add each flake input as a registry
@@ -103,8 +105,5 @@
   services.openssh.enable = true;
   
   features.theming.enable = true;
-
-  scheme = lib.mkDefault "${pkgs.:base16-schemes}/share/themes/material-darker.yaml";
-
-  system.stateVersion = "24.05";
+  features.sound.enable = false;
 }

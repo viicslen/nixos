@@ -16,11 +16,8 @@ with lib; let
   '';
 in {
   imports = [
+    ../nixos
     inputs.nixos-hardware.nixosModules.asus-zephyrus-gu603h
-    ./hardware.nix
-    ../../base/nixos
-    ../../base/personal
-    ../../base/work
   ];
 
   boot = {
@@ -28,6 +25,13 @@ in {
       "video=eDP-1-1:2560x1600@165" # Patch for 165hz display
       "intel_iommu=on" # Hardware virtualisation
     ];
+
+    # kernelPatches = [
+    #   {
+    #     name = "Async-Page-Flip-Bug";
+    #     patch = ./f3e30f9f96438489ff59619fdcbada1a31e09f8c.patch;
+    #   }
+    # ];
   };
 
   hardware = {
@@ -40,20 +44,18 @@ in {
       ];
 
       setLdLibraryPath = true;
-
-      driSupport = true;
-      driSupport32Bit = true;
     };
 
-    nvidia.modesetting.enable = true;
+    nvidia = {
+      modesetting.enable = true;
+    };
+
     logitech.wireless.enable = true;
   };
 
   environment.systemPackages = with pkgs; [
     asusctl
     supergfxctl
-    zenith-nvidia
-    nvtopPackages.nvidia
   ];
 
   services = {
@@ -79,18 +81,21 @@ in {
     asusd = {
       enable = true;
       enableUserService = true;
+      asusdConfig = ''        (
+                bat_charge_limit: 80,
+              )'';
     };
 
     tlp = {
       enable = true;
       settings = {
-        START_CHARGE_THRESH_BAT0 = 75;
-        STOP_CHARGE_THRESH_BAT0 = 90;
+        START_CHARGE_THRESH_BAT0=75;
+        STOP_CHARGE_THRESH_BAT0=90;
 
-        CPU_BOOST_ON_AC = 0;
-        CPU_BOOST_ON_BAT = 0;
-        CPU_HWP_DYN_BOOST_ON_AC = 0;
-        CPU_HWP_DYN_BOOST_ON_BAT = 0;
+        CPU_BOOST_ON_AC=0;
+        CPU_BOOST_ON_BAT=0;
+        CPU_HWP_DYN_BOOST_ON_AC=0;
+        CPU_HWP_DYN_BOOST_ON_BAT=0;
         CPU_SCALING_GOVERNOR_ON_BATTERY = "powersave";
       };
     };
