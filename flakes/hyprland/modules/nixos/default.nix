@@ -1,0 +1,110 @@
+{
+  lib,
+  pkgs,
+  inputs,
+  config,
+  options,
+  outputs,
+  ...
+}:
+with lib; let
+  cfg = config.features.hyprland;
+  homeManagerLoaded = builtins.hasAttr "home-manager" options;
+in {
+  options.features.hyprland = {
+    enable = mkEnableOption (mdDoc "hyprland");
+
+    package = mkOption {
+      type = types.package;
+      default = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      description = "The hyprland package to use";
+    };
+
+    user = mkOption {
+      type = types.str;
+      default = "nixos";
+      description = "The user to configure hyprland for";
+    };
+
+    palette = mkOption {
+      type = types.attrsOf types.str;
+      default = {};
+    };
+
+    gnomeCompatibility = mkOption {
+      type = types.bool;
+      default = false;
+    };
+  };
+
+  imports = [
+    inputs.hyprland.nixosModules.default
+  ];
+
+  config = mkIf cfg.enable {
+      programs = {
+        hyprland = {
+          enable = true;
+          xwayland.enable = true;
+          package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+          portalPackage = inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland;
+        };
+      };
+
+      xdg.portal = {
+        enable = true;
+        wlr.enable = true;
+        config = {
+          common = {
+            default = [
+              "hyprland"
+              "xdph"
+              "gtk"
+            ];
+            "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
+            # "org.freedesktop.portal.FileChooser" = [ "xdg-desktop-portal-gtk" ];
+          };
+        };
+        # extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+      };
+
+      security.polkit.enable = true;
+      services.gnome.gnome-keyring.enable = true;
+      security.pam.services.gdm.enableGnomeKeyring = true;
+
+      environment.variables.XDG_RUNTIME_DIR = "/run/user/$UID";
+
+      environment.systemPackages = with pkgs; [
+        kdePackages.polkit-kde-agent-1
+        swaynotificationcenter
+        networkmanagerapplet
+        pavucontrol
+        qpwgraph
+
+        hyprpaper
+        wlroots
+
+        # screenshot
+        grim
+        slurp
+
+        # utils
+        wl-clipboard
+        wl-screenrec
+        wlr-randr
+
+        inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
+      ];
+
+      nix.settings = {
+        substituters = [
+          "https://hyprland.cachix.org"
+          "https://anyrun.cachix.org"
+        ];
+        trusted-public-keys = [
+          "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+          "anyrun.cachix.org-1:pqBobmOjI7nKlsUMV25u9QHa9btJK65/C8vnO3p346s="
+        ];
+      };
+    };
+}
