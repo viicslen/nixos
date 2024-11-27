@@ -87,6 +87,8 @@ in {
       # Remote
       "webapps" = "50.116.36.170";
       "storesites" = "23.239.17.196";
+      "pelagrino.com" = "172.235.134.211";
+      "*.pelagrino.com" = "172.235.134.211";
 
       # Development
       "ai.local" = "127.0.0.1";
