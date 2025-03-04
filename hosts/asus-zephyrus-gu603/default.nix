@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   inputs,
   ...
 }:
@@ -9,7 +10,7 @@ with lib; {
     inputs.disko.nixosModules.disko
     (import ./disko.nix {
       inherit inputs;
-      device = "/dev/nvme0n1";
+      device = "/dev/nvme1n1";
     })
     ./hardware.nix
     ../../users/neoscode
@@ -58,7 +59,7 @@ with lib; {
       gnome.enable = true;
 
       hyprland = {
-        enable = true;
+        enable = false;
         gnomeCompatibility = true;
       };
     };
@@ -66,11 +67,11 @@ with lib; {
     functionality = {
       oom.enable = true;
       theming.enable = true;
-      appImages.enable = true;
+      appImages.enable = false;
       powerManagement.enable = true;
 
       backups = {
-        enable = true;
+        enable = false;
         repository = "b2:viicslen-asus-zephyrus-gu603";
 
         secrets = {
@@ -133,13 +134,13 @@ with lib; {
 
     presets = {
       base.enable = true;
-      work.enable = true;
-      personal.enable = true;
+      work.enable = false;
+      personal.enable = false;
     };
 
     programs = {
       kanata.enable = false;
-      mullvad.enable = true;
+      mullvad.enable = false;
       docker.nvidiaSupport = true;
 
       github-runner = {
@@ -272,8 +273,8 @@ with lib; {
       };
 
       "org/gnome/shell/extensions/arcmenu" = {
-        menu-button-border-color = lib.hm.gvariant.mkTuple [true "transparent"];
-        menu-button-border-radius = lib.hm.gvariant.mkTuple [true 10];
+      #  menu-button-border-color = lib.hm.gvariant.mkTuple [true "transparent"];
+      #  menu-button-border-radius = lib.hm.gvariant.mkTuple [true 10];
       };
 
       "org/gnome/desktop/wm/preferences".button-layout = lib.mkForce ":minimize,maximize,close";
@@ -287,32 +288,32 @@ with lib; {
     openrazer.enable = true;
   };
 
-  services.displayManager.defaultSession = "hyprland-uwsm";
+  # services.displayManager.defaultSession = "hyprland-uwsm";
 
   # Disable the built-in keyboard
   services.udev.extraRules = lib.mkAfter ''
     KERNEL=="event*", ATTRS{name}=="AT Translated Set 2 keyboard", ENV{LIBINPUT_IGNORE_DEVICE}="1"
   '';
 
-  environment.systemPackages = [
-    jetbrains-toolbox
-    jetbrains.idea-ultimate
-    jetbrains.phpstorm
-    jetbrains.datagrip
-    jetbrains.webstorm
-    jetbrains.goland
+  environment.systemPackages = with pkgs; [
+    # jetbrains-toolbox
+    # jetbrains.idea-ultimate
+    # jetbrains.phpstorm
+    # jetbrains.datagrip
+    # jetbrains.webstorm
+    # jetbrains.goland
     vscode
-    waveterm
-    lens
-    skypeforlinux
-    insomnia
-    tangram
-    endeavour
-    drawing
-    kooha
-    vscode
-    obsidian
-    drawio
+    # waveterm
+    # lens
+    # skypeforlinux
+    # insomnia
+    # tangram
+    # endeavour
+    # drawing
+    # kooha
+    # vscode
+    # obsidian
+    # drawio
   ];
 
   system.stateVersion = "25.05";
