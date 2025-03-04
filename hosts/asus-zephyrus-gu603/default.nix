@@ -10,7 +10,7 @@ with lib; {
     inputs.disko.nixosModules.disko
     (import ./disko.nix {
       inherit inputs;
-      device = "/dev/nvme1n1";
+      device = "/dev/disk/by-id/nvme-WD_BLACK_SN770_1TB_223766801969";
     })
     ./hardware.nix
     ../../users/neoscode
