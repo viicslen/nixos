@@ -160,6 +160,19 @@ with lib; {
     };
   };
 
+  users = {
+    mutableUsers = false;
+    users.root = {
+      name = "root";
+      home = "/root";
+      description = "Root user";
+      extraGroups = ["networkmanager" "wheel"];
+      useDefaultShell = true;
+      shell = pkgs.bashInteractive;
+      password = "nixos";
+    };
+  };
+
   home-manager.users.neoscode = {
     modules.functionality.impermanence = {
       enable = true;
