@@ -1,12 +1,14 @@
-{
-  pkgs,
-  osConfig,
-  ...
-}: let
+{pkgs, config, osConfig, ...}: let
   user = "neoscode";
-  name = "Victor R";
 in {
-  xdg.configFile."intelephense/licence.txt".source = osConfig.age.secrets.intelephense.path;
+  age = {
+    identityPaths = ["${osConfig.users.users.${user}.home}/.ssh/agenix"];
+
+    secrets.intelephense = {
+      file = ../../secrets/intelephense/licence.age;
+      path = "${osConfig.users.users.${user}.home}/.config/intelephense/licence.txt";
+    };
+  };
 
   home = {
     username = osConfig.users.users.${user}.name;
@@ -51,63 +53,12 @@ in {
     ssh = {
       enable = true;
       controlPath = "/home/${user}/.ssh/controlmasters/%r@%h:%p";
-      matchBlocks = {
-        "FmTod" = {
-          hostname = "webapps";
-          user = "fmtod";
-        };
-
-        "SellDiam" = {
-          hostname = "webapps";
-          user = "inventory";
-        };
-
-        "DOS" = {
-          hostname = "storesites";
-          user = "dostov";
-        };
-
-        "BLVD" = {
-          hostname = "storesites";
-          user = "diamondblvd";
-        };
-
-        "EXB" = {
-          hostname = "storesites";
-          user = "extrabrilliant";
-        };
-
-        "DTC" = {
-          hostname = "storesites";
-          user = "diamondtraces";
-        };
-
-        "NFC" = {
-          hostname = "storesites";
-          user = "naturalfacet";
-        };
-
-        "TJD" = {
-          hostname = "storesites";
-          user = "tiffanyjonesdesigns";
-        };
-
-        "47DD" = {
-          hostname = "storesites";
-          user = "47diamonddistrict";
-        };
-
-        "PELA" = {
-          hostname = "storesites";
-          user = "pelagrino";
-        };
-      };
     };
 
     git = {
       enable = true;
       delta.enable = true;
-      userName = name;
+      userName = osConfig.users.users.${user}.description;
       userEmail = "39545521+viicslen@users.noreply.github.com";
       aliases = {
         nah = ''!f(){ git reset --hard; git clean -df; if [ -d ".git/rebase-apply" ] || [ -d ".git/rebase-merge" ]; then git rebase --abort; fi; }; f'';
