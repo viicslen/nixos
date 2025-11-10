@@ -21,8 +21,9 @@ with inputs.self.lib;
       # Build a single nixos configuration
       mkHostConfig = hostName: hostConfig: let
         system = "${hostConfig.system}";
+        builder = hostConfig.builder or nixpkgs.lib.nixosSystem;
       in
-        nixpkgs.lib.nixosSystem {
+        builder {
           inherit system;
           modules =
             (shared.modules or [])
