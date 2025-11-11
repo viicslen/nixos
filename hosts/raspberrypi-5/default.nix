@@ -11,16 +11,15 @@
     networking.hostName = "rpi5";
 
     nixpkgs = {
-        buildPlatform = "x86_64-linux";
-        hostPlatform = "aarch64-linux";
-        crossSystem.system = "aarch64-linux";
+      buildPlatform = "x86_64-linux";
+      hostPlatform = "aarch64-linux";
     };
 
     system.nixos.tags = let
-        cfg = config.boot.loader.raspberryPi;
+      cfg = config.boot.loader.raspberryPi;
     in [
-        "raspberry-pi-${cfg.variant}"
-        cfg.bootloader
-        config.boot.kernelPackages.kernel.version
+      "raspberry-pi-${cfg.variant}"
+      cfg.bootloader
+      config.boot.kernelPackages.kernel.version
     ];
 }

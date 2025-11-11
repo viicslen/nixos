@@ -51,11 +51,5 @@
       path = ./raspberrypi-5;
       builder = inputs.nixos-raspberrypi.lib.nixosSystemFull;
     };
-
-    raspberrypi-5-installer = {
-      system = "aarch64-linux";
-      path = ./raspberrypi-5;
-      builder = inputs.nixos-raspberrypi.lib.nixosInstaller;
-    };
   };
 }
